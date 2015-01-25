@@ -40,9 +40,25 @@ setwd(data_path)
 
 # Get the activity labels into a data frame, need this to use them as row descriptions
 activity_labels <- read.table("./activity_labels.txt", stringsAsFactors = FALSE)
-# We can use a named vector to look up the description of the activity codes (for step 3)
+# We can use a named vector to look up the description of the activity codes for step 3
 lookup <- activity_labels$V2
 names(lookup) <- activity_labels$V1
+
+
+# Get the descriptions of the data elements into a data frame, need these for step 2
+features <- read.table("./features.txt")
+
+# The instructions specify to keep only the variables with mean and standard deviation on the
+# measurements. From the above data frame, we can observe some variables with the words "mean" and
+# "std" in the description. For this assignment, only the columns with the exact strings "mean()"
+# and "std()" will be kept.
+
+# Get the index of the columns with the strings "mean()" and "std()"
+vars_to_keep <- grep("mean\\(\\)|std\\(\\)", features$V2)
+
+# Construct a character matrix to use for extracting only requested columns for step 2
+col_classes <- rep("NULL", length(features$V1))
+col_classes[vars_to_keep] <- "numeric"
 
 # Reading the training and test sets into R. This is will be a bit slow because read.table() is not
 # very fast.
@@ -65,9 +81,12 @@ build_path <- function(type, file_template) {
 read_all <- function(type) {
   subjects   <- read.table(build_path(type, "subject_#.txt"), col.names = "subject")
   activities <- read.table(build_path(type, "y_#.txt"), col.names = "activity_code")
-  data       <- read.table(build_path(type, "X_#.txt"))
+  data       <- read.table(
+                  build_path(type, "X_#.txt"),
+                  colClasses = col_classes
+                )
   # Put them together. Add a factor variable to tell whether this is the test or the training set.
-  # Also add the activity descriptions (for step 3).
+  # Also add the activity descriptions for step 3.
   cbind(
     subjects,
     "type" = as.factor(type),

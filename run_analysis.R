@@ -25,6 +25,10 @@
 #     |-- X_train.txt
 #     |-- subject_train.txt
 #     `-- y_train.txt
+#
+# For this assignment, I am mostly sticking to the base functions since there is no specific
+# requirement to use specific packages nor there is a specific requirement to write fastest/most
+# efficient code.
 
 
 # Specify the path to the working directory, and set it
@@ -33,3 +37,21 @@ project_path <- file.path(course_path, "getdata-courseproject")
 data_path    <- file.path(project_path, "data")
 setwd(data_path)
 
+
+# Read the training and test sets. This is will be a bit slow because read.table() is not very fast.
+
+# The conceptual "datasets" are provided in three separate files each: 1. subjects, 2. activity
+# labels, and 3. actual data (these are actually derived data elements from the raw sensor data
+# which is not utilized by this exercise). Since the order of rows (observations) is crucial in
+# matching the three files. The code below will be read them back to back and immediatly merge them.
+# Also add a factor variable to each group so that we can identify whether an observation is from
+# the "test"or the "training" set after we stack up the two datasets.
+
+# First, handle the training dataset
+subjects   <- read.table("./train/subject_train.txt", col.names = "subject")
+activities <- read.table("./train/y_train.txt", col.names = "activity_code")
+data       <- read.table("./train/X_train.txt")
+
+# Put them together. Add a factor variable to tell whether this is the test or the training set.
+# Also add a  blank column to be filled in later with activity descriptions.
+df_training <- cbind(subjects, "type" = as.factor("training"), activities, "description" = "", data)

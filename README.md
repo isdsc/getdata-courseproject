@@ -1,6 +1,6 @@
 ### Getting and Cleaning Data: Course Project
 
-This materials in this repository will reproduce the tasks to collect, work with, and clean a data
+The materials in this repository will reproduce the tasks to collect, work with, and clean a data
 set as defined in the course project for "Getting and Cleaning Data" which is the third course in
 the Johns Hopkins Data Science Specialization series on Coursera.
 

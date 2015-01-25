@@ -19,5 +19,39 @@ directory". The output should be the tidy data set submitted for part 1 (from st
 
 ### Instructions to Run the R Code
 
-To keep the project files organized, the data files are put in their own subdirectory called
-"data". The script will start by setting the working directory
+To keep the project files organized, the data files are put in their own subdirectory called "data":
+
+
+```
+.
+|-- README.md
+-- run_analysis.R
+`-- data
+    |-- activity_labels.txt
+    |-- features.txt
+    |-- features_info.txt
+    |-- test
+    |   |-- X_test.txt
+    |   |-- subject_test.txt
+    |   `-- y_test.txt
+    `-- train
+        |-- X_train.txt
+        |-- subject_train.txt
+        `-- y_train.txt
+```
+
+Before running the script, make sure that the directory structure is set up as shown above and that
+the directory paths at the beginning of the script file is properly adjusted to match your working
+environment.
+
+### Notes
+
+For this assignment, the code sticks mostly to the base R functions, since there is no specific
+requirement to use specific packages nor there is a specific requirement to write the fastest/most
+efficient code. Specifically, the part of the code that reads the input files into an R data frame
+takes considerably long (about 30sec on my computer).
+
+Also note that the specific steps provided in the instructions are not necessarily the most logical
+sequence of actions to accomplish the ultimate goal. The code is laid out in a way that was most
+logical to me, but comments are included tying the specific statements to the steps provided in the
+instructions.

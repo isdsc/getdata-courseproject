@@ -38,6 +38,12 @@ data_path    <- file.path(project_path, "data")
 setwd(data_path)
 
 
+# Get the activity labels into a data frame, need this to use them as row descriptions
+activity_labels <- read.table("./activity_labels.txt", stringsAsFactors = FALSE)
+# We can use a named vector to look up the description of the activity codes (for step 3)
+lookup <- activity_labels$V2
+names(lookup) <- activity_labels$V1
+
 # Reading the training and test sets into R. This is will be a bit slow because read.table() is not
 # very fast.
 
@@ -58,16 +64,18 @@ build_path <- function(type, file_template) {
 # Function to read the files and combine them into a single data frame
 read_all <- function(type) {
   subjects   <- read.table(build_path(type, "subject_#.txt"), col.names = "subject")
-  activities <- read.table(build_path(type, "y_#.txt"), col.names = "activity")
+  activities <- read.table(build_path(type, "y_#.txt"), col.names = "activity_code")
   data       <- read.table(build_path(type, "X_#.txt"))
   # Put them together. Add a factor variable to tell whether this is the test or the training set.
-  # Also add a  blank column to be filled in later with activity descriptions.
-  cbind(subjects, "type" = as.factor(type), activities, "activity_description" = NA, data)
+  # Also add the activity descriptions (for step 3).
+  cbind(
+    subjects,
+    "type" = as.factor(type),
+    activities,
+    "activity_description" = lookup[activities$activity_code],
+    data
+  )
 }
 
-# Read the training and the test datasets into separate data frames
-df_training <- read_all("train")
-df_test     <- read_all("test")
-
-# Combined the training and the test datasets into a single data frame
-df_combined <- rbind(df_training, df_test)
+# Read the training and the test datasets and combine them into a single data frame (for step 1)
+df_combined <- rbind( read_all("train"), read_all("test") )

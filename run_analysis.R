@@ -38,7 +38,8 @@ data_path    <- file.path(project_path, "data")
 setwd(data_path)
 
 
-# Read the training and test sets. This is will be a bit slow because read.table() is not very fast.
+# Reading the training and test sets into R. This is will be a bit slow because read.table() is not
+# very fast.
 
 # The conceptual "datasets" are provided in three separate files each: 1. subjects, 2. activity
 # labels, and 3. actual data (these are actually derived data elements from the raw sensor data
@@ -47,11 +48,26 @@ setwd(data_path)
 # Also add a factor variable to each group so that we can identify whether an observation is from
 # the "test"or the "training" set after we stack up the two datasets.
 
-# First, handle the training dataset
-subjects   <- read.table("./train/subject_train.txt", col.names = "subject")
-activities <- read.table("./train/y_train.txt", col.names = "activity_code")
-data       <- read.table("./train/X_train.txt")
+# Create a function to handle the training and the test files consistently
 
-# Put them together. Add a factor variable to tell whether this is the test or the training set.
-# Also add a  blank column to be filled in later with activity descriptions.
-df_training <- cbind(subjects, "type" = as.factor("training"), activities, "description" = "", data)
+# Helper function to build the correct path to the input files
+build_path <- function(type, file_template) {
+  file.path(".", type, sub("#", type, file_template))
+}
+
+# Function to read the files and combine them into a single data frame
+read_all <- function(type) {
+  subjects   <- read.table(build_path(type, "subject_#.txt"), col.names = "subject")
+  activities <- read.table(build_path(type, "y_#.txt"), col.names = "activity")
+  data       <- read.table(build_path(type, "X_#.txt"))
+  # Put them together. Add a factor variable to tell whether this is the test or the training set.
+  # Also add a  blank column to be filled in later with activity descriptions.
+  cbind(subjects, "type" = as.factor(type), activities, "activity_description" = NA, data)
+}
+
+# Read the training and the test datasets into separate data frames
+df_training <- read_all("train")
+df_test     <- read_all("test")
+
+# Combined the training and the test datasets into a single data frame
+df_combined <- rbind(df_training, df_test)

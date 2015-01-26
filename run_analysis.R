@@ -106,3 +106,21 @@ df_combined <- rbind( read_all("train"), read_all("test") )
 
 
 # Note that the intervening steps 2, 3, and 4 were incorporated into the read_all function above
+
+
+# Calculate the means of the extracted columns by subject and by activity for step 5
+
+# First get the list of variable names
+vars_kept = var_names[vars_to_keep]
+
+# Get the group combinations
+groups <- list(
+            "subject" = df_combined$subject,
+            "activity_description" = df_combined$activity_description
+          )
+
+# Use the aggregate() function to apply mean function separately to each group
+results <- aggregate(df_combined[, vars_kept], groups, mean)
+
+# Write the resulting tidy dataset to a file in the parent folder to track it in the repo
+write.table(results, "../tidy_dataset.txt", row.name=FALSE)

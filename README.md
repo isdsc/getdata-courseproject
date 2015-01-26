@@ -53,5 +53,5 @@ takes considerably long (about 30sec on my computer).
 
 Also note that the specific steps provided in the instructions are not necessarily the most logical
 sequence of actions to accomplish the ultimate goal. The code is laid out in a way that was most
-logical to me, but comments are included tying the specific statements to the steps provided in the
+logical to me, but comments are included tying the specific statements to the steps required in the
 instructions.

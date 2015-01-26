@@ -45,15 +45,19 @@ lookup <- activity_labels$V2
 names(lookup) <- activity_labels$V1
 
 
-# Get the descriptions of the data elements into a data frame, need these for step 2
+# Get the descriptions of the data elements into a data frame, need these for step 2 and for step 4
 features <- read.table("./features.txt")
+
+# Format the names into valid R column names for step 4
+var_names <- gsub("[()]+$", "", features$V2)
+var_names <- gsub("[()\\-,]+", "_", var_names)
 
 # The instructions specify to keep only the variables with mean and standard deviation on the
 # measurements. From the above data frame, we can observe some variables with the words "mean" and
 # "std" in the description. For this assignment, only the columns with the exact strings "mean()"
 # and "std()" will be kept.
 
-# Get the index of the columns with the strings "mean()" and "std()"
+# Get the index of the columns with the strings "mean()" and "std()" for step 2
 vars_to_keep <- grep("mean\\(\\)|std\\(\\)", features$V2)
 
 # Construct a character matrix to use for extracting only requested columns for step 2
@@ -83,6 +87,7 @@ read_all <- function(type) {
   activities <- read.table(build_path(type, "y_#.txt"), col.names = "activity_code")
   data       <- read.table(
                   build_path(type, "X_#.txt"),
+                  col.names = var_names,
                   colClasses = col_classes
                 )
   # Put them together. Add a factor variable to tell whether this is the test or the training set.
@@ -96,5 +101,8 @@ read_all <- function(type) {
   )
 }
 
-# Read the training and the test datasets and combine them into a single data frame (for step 1)
+# Read the training and the test datasets and combine them into a single data frame for step 1
 df_combined <- rbind( read_all("train"), read_all("test") )
+
+
+# Note that the intervening steps 2, 3, and 4 were incorporated into the read_all function above
